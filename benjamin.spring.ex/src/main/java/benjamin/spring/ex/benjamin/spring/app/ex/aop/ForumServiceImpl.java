@@ -46,5 +46,11 @@ public class ForumServiceImpl extends AbstractEx implements ForumService {
                 handler);
         proxy.removeForum(1);
         proxy.removeTopic(2);
+        CglibProxy cgProxy = new CglibProxy();
+        ForumServiceImpl forumService =
+                (ForumServiceImpl) cgProxy.getProxy(ForumServiceImpl.class);
+
+        forumService.removeForum(1);
+        forumService.removeTopic(2);
     }
 }
