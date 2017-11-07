@@ -1,4 +1,4 @@
-package benjamin.spring.ex.benjamin.spring.app.ex.aop;
+package benjamin.spring.ex.app.aop;
 
 public class NaiveWaiter implements Waiter {
     public void greetTo(String name) {

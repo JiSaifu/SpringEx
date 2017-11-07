@@ -1,4 +1,4 @@
-package benjamin.spring.ex.benjamin.spring.app.ex.aop;
+package benjamin.spring.ex.app.aop;
 
 public interface ForumService {
     void removeTopic(int topicId);

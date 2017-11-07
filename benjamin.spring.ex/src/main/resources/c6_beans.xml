@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation=
+               "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="greetingBefore" class="benjamin.spring.ex.app.aop.GreetingBeforeAdvice" />
+    <bean id="greetingAfter" class="benjamin.spring.ex.app.aop.GreetingAfterAdvice" />
+    <bean id="greetingAround" class="benjamin.spring.ex.app.aop.GreetingInterceptor" />
+    <bean id="target" class="benjamin.spring.ex.app.aop.NaiveWaiter" />
+    <!--
+        ・proxyInterfaces: 是否对类进行代理（而不是对接口进行代理），设置为True是，使用CGLib代理
+        该属性设置为True时，无需设置proxyInterfaces属性，设置值会被忽略
+
+        ・p:interceptorNames="greetingBefore, greetingAfter“和使用idref等价，后者的设置内容可由IDE进行Check，推荐使用
+    -->
+    <bean id="waiter" class="org.springframework.aop.framework.ProxyFactoryBean"
+
+          p:target-ref="target"
+          p:proxyInterfaces="benjamin.spring.ex.app.aop.Waiter"
+          p:proxyTargetClass="true"
+    >
+        <!--
+        <property name="interceptorNames">
+            <list>
+                <idref bean="greetingBefore"/>
+                <idref bean="greetingAfter"/>
+            </list>
+        </property>
+        -->
+        <property name="interceptorNames" value="greetingAround" />
+    </bean>
+    <bean id="pMonitor" class="benjamin.spring.ex.app.aop.ControllablePerformanceMonitor" />
+    <bean id="forumServiceTarget" class="benjamin.spring.ex.app.aop.ForumServiceImpl" />
+    <bean id="forumService" class="org.springframework.aop.framework.ProxyFactoryBean"
+          p:interfaces="benjamin.spring.ex.app.aop.Monitorable"
+          p:target-ref="forumServiceTarget"
+          p:interceptorNames="pMonitor"
+          p:proxyTargetClass="true" />
+    <bean id="greetingAdvisor" class="benjamin.spring.ex.app.aop.GreetingAdvisor"
+        p:advice-ref="greetingBefore" />
+    <bean id="regexAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor"
+          p:advice-ref="greetingBefore"
+          p:pattern=".*Waiter.*serve.*" />
+    <bean id="parent" class="org.springframework.aop.framework.ProxyFactoryBean"
+          p:interceptorNames="regexAdvisor"
+          p:proxyTargetClass="true" />
+    <bean id="waiter2" parent="parent" p:target-ref="target" />
+</beans>

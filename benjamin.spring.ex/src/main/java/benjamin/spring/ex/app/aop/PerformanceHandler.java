@@ -1,4 +1,4 @@
-package benjamin.spring.ex.benjamin.spring.app.ex.aop;
+package benjamin.spring.ex.app.aop;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
